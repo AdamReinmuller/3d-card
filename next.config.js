@@ -1,19 +1,19 @@
-const withCSS = require('@zeit/next-css')
+const withCSS = require("@zeit/next-css");
 
 module.exports = withCSS({
   webpack(config, options) {
     config.module.rules.push({
-      test: /\.js$/,
+      test: /\.(js|ts|jsx|tsx)$/,
       use: [
         {
-          loader: 'linaria/loader',
+          loader: "linaria/loader",
           options: {
-            sourceMap: process.env.NODE_ENV !== 'production',
+            sourceMap: process.env.NODE_ENV !== "production",
           },
         },
       ],
-    })
+    });
 
-    return config
+    return config;
   },
-})
+});
