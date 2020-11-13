@@ -2,11 +2,12 @@
   "name": "3d-card",
   "version": "1.0.0",
   "scripts": {
-    "dev": "next",
+    "dev": "next -p 3001",
     "build": "next build",
     "start": "next start"
   },
   "dependencies": {
+    "framer-motion": "^2.9.4",
     "next": "^10.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

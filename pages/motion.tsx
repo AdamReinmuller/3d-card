@@ -1,6 +1,8 @@
-import React, { FC, useCallback, MouseEvent, useRef } from "react";
+import React, { FC, useRef, useCallback, MouseEvent } from "react";
 import Head from "next/head";
 import styled from "styled-components";
+import { motion, useMotionValue, useTransform } from "framer-motion";
+
 import { GlobalStyle } from "../components/GlobalStyle";
 
 const Index: FC = () => {
@@ -18,43 +20,15 @@ const Index: FC = () => {
   const sizesRef = useRef<HTMLDivElement>(null);
   const CTARef = useRef<HTMLButtonElement>(null);
 
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const rotateX = useTransform(y, [-100, 100], [60, -60]);
+  const rotateY = useTransform(x, [-100, 100], [-60, 60]);
+
   const handleRotate = useCallback((e: MouseEvent) => {
-    if (cardRef.current) {
-      const xAxis = -(window.innerWidth / 2 - e.pageX) / 25;
-      const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
-      cardRef.current.style.transform = `rotateX(${yAxis}deg) rotateY(${xAxis}deg)`;
-    }
-  }, []);
-
-  const handleEnter = useCallback((e: MouseEvent) => {
-    if (cardRef.current) {
-      cardRef.current.style.transition = `none`;
-    }
-
-    // popOut
-    if (titleRef.current && sneakerImageRef.current && descriptionRef.current && sizesRef.current && CTARef.current) {
-      titleRef.current.style.transform = "translateZ(150px)";
-      sneakerImageRef.current.style.transform = "translateZ(200px) rotateZ(-45deg)";
-      descriptionRef.current.style.transform = "translateZ(125px)";
-      sizesRef.current.style.transform = "translateZ(100px)";
-      CTARef.current.style.transform = "translateZ(75px)";
-    }
-  }, []);
-
-  const handleLeave = useCallback((e: MouseEvent) => {
-    if (cardRef.current) {
-      cardRef.current.style.transition = "transform 0.5s ease-in-out";
-      cardRef.current.style.transform = `none`;
-    }
-
-    // popBack
-    if (titleRef.current && sneakerImageRef.current && descriptionRef.current && sizesRef.current && CTARef.current) {
-      titleRef.current.style.transform = "none";
-      sneakerImageRef.current.style.transform = "none";
-      descriptionRef.current.style.transform = "none";
-      sizesRef.current.style.transform = "none";
-      CTARef.current.style.transform = "none";
-    }
+    console.log(cardRef.current?.getBoundingClientRect);
+    console.log(e.screenX);
+    console.log(e.pageX);
   }, []);
 
   return (
@@ -64,8 +38,8 @@ const Index: FC = () => {
         <title>3d Card Effect</title>
       </Head>
 
-      <AnimationContainer onMouseMove={handleRotate} onMouseLeave={handleLeave} onMouseEnter={handleEnter}>
-        <Card ref={cardRef}>
+      <AnimationContainer>
+        <Card ref={cardRef} style={{ rotateX, rotateY, position: "relative" }} onMouseMove={handleRotate}>
           <Sneaker>
             <Circle />
             <SneakerImage src="/adidas.png" ref={sneakerImageRef} />
@@ -77,7 +51,9 @@ const Index: FC = () => {
             </Description>
             <Sizes ref={sizesRef}>
               {sizes.map(({ active, size }) => (
-                <Size active={active}>{size}</Size>
+                <Size key={size} active={active}>
+                  {size}
+                </Size>
               ))}
             </Sizes>
             <CTA ref={CTARef}>Purchase</CTA>
@@ -98,13 +74,14 @@ const Container = styled.section`
   align-items: center;
 `;
 
-const AnimationContainer = styled.div`
+const AnimationContainer = styled(motion.div)`
   perspective: 1000px;
   align-items: center;
   padding: 0 10rem;
 `;
 
-const Card = styled.div`
+const Card = styled(motion.div)`
+  perspective: 1000px;
   padding: 4rem 3rem;
   transform-style: preserve-3d;
   border-radius: 30px;
