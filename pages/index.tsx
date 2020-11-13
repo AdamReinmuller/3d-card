@@ -1,6 +1,6 @@
 import React, { FC, useCallback, MouseEvent, useRef } from "react";
 import Head from "next/head";
-import { styled } from "linaria/react";
+import styled from "styled-components";
 import { GlobalStyle } from "../components/GlobalStyle";
 
 const Index: FC = () => {
@@ -61,7 +61,7 @@ const Index: FC = () => {
     <Container>
       <GlobalStyle />
       <Head>
-        <title>3D Card Effect</title>
+        <title>3d Card Effect</title>
       </Head>
 
       <AnimationContainer onMouseMove={handleRotate} onMouseLeave={handleLeave} onMouseEnter={handleEnter}>
@@ -77,7 +77,9 @@ const Index: FC = () => {
             </Description>
             <Sizes ref={sizesRef}>
               {sizes.map(({ active, size }) => (
-                <Size active={active}>{size}</Size>
+                <Size key={size} active={active}>
+                  {size}
+                </Size>
               ))}
             </Sizes>
             <CTA ref={CTARef}>Purchase</CTA>
