@@ -1,7 +1,7 @@
 import React, { FC, useRef, useCallback, MouseEvent } from "react";
 import Head from "next/head";
 import styled from "styled-components";
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { motion, useSpring } from "framer-motion";
 
 import { GlobalStyle } from "../components/GlobalStyle";
 
@@ -20,15 +20,30 @@ const Index: FC = () => {
   const sizesRef = useRef<HTMLDivElement>(null);
   const CTARef = useRef<HTMLButtonElement>(null);
 
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const rotateX = useTransform(y, [-100, 100], [60, -60]);
-  const rotateY = useTransform(x, [-100, 100], [-60, 60]);
+  const rotateX = useSpring(0, { stiffness: 500, damping: 16 });
+  const rotateY = useSpring(0, { stiffness: 500, damping: 16 });
+  const sneakerZ = useSpring(0, { stiffness: 700, damping: 10 });
 
   const handleRotate = useCallback((e: MouseEvent) => {
-    console.log(cardRef.current?.getBoundingClientRect);
-    console.log(e.screenX);
-    console.log(e.pageX);
+    const cardRect = cardRef.current?.getBoundingClientRect();
+    const sneaker = sneakerImageRef.current;
+    if (cardRect && sneaker) {
+      const centerX = (cardRect.left + cardRect.right) / 2;
+      const centerY = (cardRect.top + cardRect.bottom) / 2;
+
+      rotateY.set((e.pageX - centerX) / 35);
+      rotateX.set(-(e.pageY - centerY) / 55);
+      sneakerZ.set(80);
+    }
+  }, []);
+
+  const handleReset = useCallback(() => {
+    const cardRect = cardRef.current?.getBoundingClientRect();
+    if (cardRect) {
+      rotateY.set(0);
+      rotateX.set(0);
+      sneakerZ.set(0);
+    }
   }, []);
 
   return (
@@ -38,11 +53,19 @@ const Index: FC = () => {
         <title>3d Card Effect</title>
       </Head>
 
-      <AnimationContainer>
-        <Card ref={cardRef} style={{ rotateX, rotateY, position: "relative" }} onMouseMove={handleRotate}>
+      <AnimationContainer onHoverEnd={handleReset}>
+        <Card
+          ref={cardRef}
+          style={{ rotateX, rotateY, position: "relative" }}
+          onMouseMove={handleRotate}
+        >
           <Sneaker>
             <Circle />
-            <SneakerImage src="/adidas.png" ref={sneakerImageRef} />
+            <SneakerImage
+              src="/adidas.png"
+              ref={sneakerImageRef}
+              style={{ translateZ: sneakerZ }}
+            />
           </Sneaker>
           <Info>
             <Title ref={titleRef}>Adidas ZX</Title>
@@ -75,13 +98,12 @@ const Container = styled.section`
 `;
 
 const AnimationContainer = styled(motion.div)`
-  perspective: 1000px;
   align-items: center;
-  padding: 0 10rem;
+  padding: 1rem 2rem;
+  perspective: 1000px;
 `;
 
 const Card = styled(motion.div)`
-  perspective: 1000px;
   padding: 4rem 3rem;
   transform-style: preserve-3d;
   border-radius: 30px;
@@ -105,12 +127,16 @@ const Circle = styled.div`
   margin: auto;
   height: 9rem;
   width: 9rem;
-  background: linear-gradient(90deg, rgba(246, 81, 71, 0.75) 0%, rgba(15, 88, 167, 0.75) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(246, 81, 71, 0.75) 0%,
+    rgba(15, 88, 167, 0.75) 100%
+  );
   border-radius: 50%;
   z-index: -1;
 `;
 
-const SneakerImage = styled.img`
+const SneakerImage = styled(motion.img)`
   width: 80%;
   transition: transform 0.7s ease-out;
 `;
@@ -148,7 +174,8 @@ const Size = styled.button<{ active?: boolean }>`
   font-size: 0.8rem;
   border-radius: 10px;
   border: none;
-  box-shadow: 4px 2px 4px rgba(0, 0, 0, 0.2), -4px -2px 6px rgba(162, 162, 162, 0.3);
+  box-shadow: 4px 2px 4px rgba(0, 0, 0, 0.2),
+    -4px -2px 6px rgba(162, 162, 162, 0.3);
   background-color: ${({ active }) => (active ? "#525252" : "transparent")};
   color: ${({ active }) => (active ? "#fff" : "#000")};
   cursor: pointer;

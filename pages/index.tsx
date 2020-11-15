@@ -32,9 +32,16 @@ const Index: FC = () => {
     }
 
     // popOut
-    if (titleRef.current && sneakerImageRef.current && descriptionRef.current && sizesRef.current && CTARef.current) {
+    if (
+      titleRef.current &&
+      sneakerImageRef.current &&
+      descriptionRef.current &&
+      sizesRef.current &&
+      CTARef.current
+    ) {
       titleRef.current.style.transform = "translateZ(150px)";
-      sneakerImageRef.current.style.transform = "translateZ(200px) rotateZ(-45deg)";
+      sneakerImageRef.current.style.transform =
+        "translateZ(200px) rotateZ(-45deg)";
       descriptionRef.current.style.transform = "translateZ(125px)";
       sizesRef.current.style.transform = "translateZ(100px)";
       CTARef.current.style.transform = "translateZ(75px)";
@@ -48,7 +55,13 @@ const Index: FC = () => {
     }
 
     // popBack
-    if (titleRef.current && sneakerImageRef.current && descriptionRef.current && sizesRef.current && CTARef.current) {
+    if (
+      titleRef.current &&
+      sneakerImageRef.current &&
+      descriptionRef.current &&
+      sizesRef.current &&
+      CTARef.current
+    ) {
       titleRef.current.style.transform = "none";
       sneakerImageRef.current.style.transform = "none";
       descriptionRef.current.style.transform = "none";
@@ -64,7 +77,11 @@ const Index: FC = () => {
         <title>3d Card Effect</title>
       </Head>
 
-      <AnimationContainer onMouseMove={handleRotate} onMouseLeave={handleLeave} onMouseEnter={handleEnter}>
+      <AnimationContainer
+        onMouseMove={handleRotate}
+        onMouseLeave={handleLeave}
+        onMouseEnter={handleEnter}
+      >
         <Card ref={cardRef}>
           <Sneaker>
             <Circle />
@@ -128,7 +145,11 @@ const Circle = styled.div`
   margin: auto;
   height: 9rem;
   width: 9rem;
-  background: linear-gradient(90deg, rgba(246, 81, 71, 0.75) 0%, rgba(15, 88, 167, 0.75) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(246, 81, 71, 0.75) 0%,
+    rgba(15, 88, 167, 0.75) 100%
+  );
   border-radius: 50%;
   z-index: -1;
 `;
@@ -171,7 +192,8 @@ const Size = styled.button<{ active?: boolean }>`
   font-size: 0.8rem;
   border-radius: 10px;
   border: none;
-  box-shadow: 4px 2px 4px rgba(0, 0, 0, 0.2), -4px -2px 6px rgba(162, 162, 162, 0.3);
+  box-shadow: 4px 2px 4px rgba(0, 0, 0, 0.2),
+    -4px -2px 6px rgba(162, 162, 162, 0.3);
   background-color: ${({ active }) => (active ? "#525252" : "transparent")};
   color: ${({ active }) => (active ? "#fff" : "#000")};
   cursor: pointer;
