@@ -5,27 +5,23 @@ import { motion, useSpring } from "framer-motion";
 
 import { GlobalStyle } from "../components/GlobalStyle";
 
+const sizes = [
+  { size: 39, active: false },
+  { size: 40, active: true },
+  { size: 41, active: false },
+  { size: 42, active: false },
+  { size: 43, active: false },
+];
+
 const Index: FC = () => {
-  const sizes = [
-    { size: 39, active: false },
-    { size: 40, active: true },
-    { size: 41, active: false },
-    { size: 42, active: false },
-    { size: 43, active: false },
-  ];
-  const cardRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLDivElement>(null);
-  const descriptionRef = useRef<HTMLDivElement>(null);
   const sneakerImageRef = useRef<HTMLImageElement>(null);
-  const sizesRef = useRef<HTMLDivElement>(null);
-  const CTARef = useRef<HTMLButtonElement>(null);
 
   const rotateX = useSpring(0, { stiffness: 500, damping: 16 });
   const rotateY = useSpring(0, { stiffness: 500, damping: 16 });
   const sneakerZ = useSpring(0, { stiffness: 700, damping: 10 });
 
   const handleRotate = useCallback((e: MouseEvent) => {
-    const cardRect = cardRef.current?.getBoundingClientRect();
+    const cardRect = e.currentTarget?.getBoundingClientRect();
     const sneaker = sneakerImageRef.current;
     if (cardRect && sneaker) {
       const centerX = (cardRect.left + cardRect.right) / 2;
@@ -38,12 +34,9 @@ const Index: FC = () => {
   }, []);
 
   const handleReset = useCallback(() => {
-    const cardRect = cardRef.current?.getBoundingClientRect();
-    if (cardRect) {
-      rotateY.set(0);
-      rotateX.set(0);
-      sneakerZ.set(0);
-    }
+    rotateY.set(0);
+    rotateX.set(0);
+    sneakerZ.set(0);
   }, []);
 
   return (
@@ -55,7 +48,6 @@ const Index: FC = () => {
 
       <AnimationContainer onHoverEnd={handleReset}>
         <Card
-          ref={cardRef}
           style={{ rotateX, rotateY, position: "relative" }}
           onMouseMove={handleRotate}
         >
@@ -68,18 +60,18 @@ const Index: FC = () => {
             />
           </Sneaker>
           <Info>
-            <Title ref={titleRef}>Adidas ZX</Title>
-            <Description ref={descriptionRef}>
+            <Title>Adidas ZX</Title>
+            <Description>
               future-ready trainers with wrapped boost for exceptional comfort
             </Description>
-            <Sizes ref={sizesRef}>
+            <Sizes>
               {sizes.map(({ active, size }) => (
                 <Size key={size} active={active}>
                   {size}
                 </Size>
               ))}
             </Sizes>
-            <CTA ref={CTARef}>Purchase</CTA>
+            <CTA>Purchase</CTA>
           </Info>
         </Card>
       </AnimationContainer>
